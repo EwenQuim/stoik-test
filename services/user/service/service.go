@@ -4,6 +4,8 @@ import (
 	"database/sql"
 
 	"stoik-leasing-cars/services/user"
+
+	"github.com/google/uuid"
 )
 
 type Service struct {
@@ -11,7 +13,8 @@ type Service struct {
 }
 
 func (s Service) Create(u user.User) (user.User, error) {
-	_, err := s.DB.Exec("INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", u.Name, u.Email, u.Password)
+	u.ID = uuid.NewString()
+	_, err := s.DB.Exec("INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)", u.ID, u.Name, u.Email, u.Password)
 	if err != nil {
 		return u, err
 	}
