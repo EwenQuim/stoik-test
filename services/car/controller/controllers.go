@@ -66,3 +66,30 @@ func (rs Resources) getCar(w http.ResponseWriter, r *http.Request) {
 
 	common.SendJSON(w, cars)
 }
+
+func (rs Resources) rentCar(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	type rentCarRequest struct {
+		UserID string `json:"userID" validate:"required"`
+	}
+
+	user, err := common.RequestBody[rentCarRequest](w, r, rs.Validator)
+	if err != nil {
+		return
+	}
+
+	car, err := rs.Cars.ByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, err = rs.Cars.Rent(car, user.UserID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	common.SendJSON(w, car)
+}

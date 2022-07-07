@@ -18,3 +18,17 @@ CREATE TABLE IF NOT EXISTS cars (
   year int,
   color text
 );
+-----------------------------------------------------------------------
+---- Rentals
+-----------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS rentals (
+  user_id uuid NOT NULL,
+  car_id uuid NOT NULL,
+  start_date date NOT NULL,
+  end_date date NOT NULL,
+  price int NOT NULL,
+  paid boolean NOT NULL,
+  PRIMARY KEY (user_id, car_id)
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  FOREIGN KEY (car_id) REFERENCES cars (id) ON DELETE CASCADE
+);

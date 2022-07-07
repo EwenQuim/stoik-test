@@ -2,6 +2,7 @@ package service
 
 import (
 	"database/sql"
+	"time"
 
 	"stoik-leasing-cars/services/car"
 
@@ -43,6 +44,16 @@ func (s Service) All() ([]car.Car, error) {
 func (s Service) ByID(id string) (car.Car, error) {
 	var c car.Car
 	err := s.DB.QueryRow("SELECT * FROM cars WHERE id = $1", id).Scan(&c.ID, &c.Name, &c.Price, &c.Year, &c.Color)
+	if err != nil {
+		return c, err
+	}
+	return c, nil
+}
+
+func (s Service) Rent(c car.Car, userID string) (car.Car, error) {
+	_, err := s.DB.Exec(`INSERT INTO rentals 
+	(car_id, user_id, start_date, end_date, price, paid) 
+	VALUES ($1, $2, $3, $4, $5, $6)`, c.ID, userID, time.Now(), time.Now().Add(time.Hour), c.Price, false)
 	if err != nil {
 		return c, err
 	}

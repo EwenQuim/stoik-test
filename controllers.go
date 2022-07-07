@@ -34,7 +34,7 @@ func NewGlobalController(st Store) *chi.Mux {
 			Users: userService.Service{DB: st.DB}, Validator: validator,
 		}.Routes())
 		router.Mount("/cars", carsControllers.Resources{
-			Cars: carService.Service{DB: st.DB}, Validator: validator,
+			Cars: carService.Service{DB: st.DB}, Users: userService.Service{DB: st.DB}, Validator: validator,
 		}.Routes())
 	})
 
