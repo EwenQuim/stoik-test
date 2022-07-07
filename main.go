@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -17,7 +18,9 @@ type Server struct {
 }
 
 func main() {
-	r := chi.NewMux()
+	st := NewStore()
+
+	r := NewGlobalController(*st)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, world!"))
@@ -32,6 +35,7 @@ func main() {
 		},
 	}
 
+	fmt.Println("Listening on port", s.Addr)
 	if err := s.ListenAndServe(); err != nil {
 		panic(err)
 	}
